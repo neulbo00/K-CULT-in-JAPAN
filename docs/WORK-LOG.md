@@ -40,15 +40,14 @@
 - 기간 선택: 현재 연도 기본값, 연도별, 전체, 직접 지정.
 - 기간 필터는 통계와 일정 전체에 공통 적용.
 - 다일 이벤트는 선택 기간과 겹치는 경우 포함하도록 정의.
-- 자동화 목표: Notion Webhook → Cloudflare Worker → Notion API 재조회 → 공개 필드 검증·집계 → 캐시/API → 페이지.
-- 토큰은 서버 측 비밀 환경변수에 보관하며 공개 페이지에 노출하지 않는 원칙 명시.
+- 자동 동기화는 Windows 로컬 Node.js → Notion API → 공개용 data.js 생성·검증 → GitHub 반영 경로로 진행.
+- 토큰은 Windows 로컬 환경에 보관하며 공개 페이지에 노출하지 않는 원칙 명시.
 
 ### 데이터 선결 조건
 - 현재 data.js는 전체 집계와 24건 일정 미리보기만 보유.
 - 과거 기간 및 직접 지정 기간의 정확한 재집계를 위해 이벤트별 공개 레코드와 시작일·종료일·유형·카테고리·지역 필드가 필요.
 - 원본 이벤트별 데이터가 연결되기 전에는 기간 필터를 완성된 기능처럼 표시하지 않음.
-- Windows 로컬 동기화 경로를 먼저 안정화하고 Cloudflare Worker 전환은 별도 단계로 검증.
-
+- Windows 로컬 동기화 경로를 먼저 안정화.
 
 ## 2026-11-27 화면 구성 기준 재확인
 
@@ -72,7 +71,6 @@
 - 다음 단계는 현재 index.html의 실제 구조를 확인하고 위 5개 영역과 기간 선택 컨트롤을 구현하는 것.
 - Notion 이벤트별 데이터 연동 이후 기간별 재집계와 8개 권역 분석을 실제 기능으로 연결.
 
-
 ### 화면 구성 1차 구현
 - `index.html`의 내비게이션에 ANALYTICS 메뉴를 추가.
 - 기존 Trends 영역에서 월별 이벤트 추이만 분리하고, 유형·카테고리·프로모터 분석을 독립된 Analytics 영역으로 재배치.
@@ -83,15 +81,21 @@
 - Regions는 실제 권역별 데이터가 확보될 때까지 준비 상태 안내를 유지.
 - 브라우저 실기기 렌더링 검수 및 데이터 기능 검증은 아직 미완료.
 
-
 ## 2026-11-27 배포 상태 확인 및 동기화 방식 정정
-
 - 공개 GitHub Pages 주소가 갱신되지 않는 현상 확인 요청 접수.
-- `main`과 `feature/kcult-v2-foundation` 비교 결과: 개발 브랜치가 `main`보다 12개 커밋 앞서 있으며, 아직 병합되지 않은 상태.
-- 따라서 현재 개발 브랜치의 `index.html` 및 작업 문서 변경은 공개 Pages에 반영되지 않음.
-- 공개 배포는 `main` 기준으로 유지. 이번 확인 과정에서는 `main` 또는 Pages 설정을 변경하지 않음.
-- 아키텍처 결정 정정: Cloudflare Worker 및 별도 중간 서버는 사용하지 않음.
+- 당시 `main`과 `feature/kcult-v2-foundation`은 병합되지 않은 상태였음.
+- 공개 배포는 `main` 기준으로 유지.
+- 아키텍처 결정: Cloudflare Worker 및 별도 중간 서버는 사용하지 않음.
 - 확정 경로: Windows 로컬 PC의 Node.js 동기화 프로그램 → Notion API → 공개용 `data.js` 생성·검증 → GitHub 반영 → GitHub Pages.
 - Notion API 키는 Windows 로컬 환경에 보관. 주기적 실행은 Windows 작업 스케줄러 등으로 검토.
-- 이후 개발 및 문서에서 Cloudflare Worker를 실행 아키텍처로 제안하거나 전제하지 않음.
-- 이번 확인 시점에 공개 URL의 실제 렌더링 내용은 웹 열람 도구에서 직접 검증되지 않았음.
+
+## 2026-11-27 PR #1 병합 및 공개 반영
+- 사용자 요청에 따라 PR #1 `K-CULT 2.0: dark dashboard foundation`을 Draft에서 Ready for review로 전환한 뒤 `main`에 Squash Merge.
+- PR URL: https://github.com/neulbo00/K-CULT-in-JAPAN/pull/1
+- 병합 커밋: `2195377ef16da9ab97e099ee8ef21bf9d2cee2d5`
+- 병합 결과: GitHub에서 `merged: true` 확인. PR 상태는 closed.
+- `main`의 병합 기준 커밋이 위 병합 커밋으로 이동한 것을 확인.
+- 병합 대상 파일: `README.md`, `docs/INFO-DESIGN.md`, `docs/WORK-LOG.md`, `index.html`.
+- GitHub Pages 자동 배포 완료 여부와 브라우저 실제 렌더링은 별도 확인이 필요하며, 아직 성공으로 단정하지 않음.
+- 미완료 검수: 데스크톱·모바일 렌더링, Notion 원본 DB 전수 대조, 월별 합계 1건 차이 원인, 지역별 데이터 연결.
+- 다음 작업: Pages 배포 상태와 공개 URL 렌더링 확인 후 화면 검수 진행.
