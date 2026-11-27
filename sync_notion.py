@@ -59,10 +59,16 @@ def main():
     minimum=int(os.getenv("SYNC_MIN_RECORDS","250"))
     if len(events)<minimum: raise RuntimeError("Safety stop: "+str(len(events))+" records; minimum "+str(minimum))
     events.sort(key=lambda x:(x["start"] or "9999-99-99",x["name"]))
-    output="window.KDATA="+json.dumps({"generatedAt":datetime.now().astimezone().date().isoformat(),"total":len(events),"events":events},ensure_ascii=False,separators=(",",":"))+";\n"
     target=ROOT/"data.js"
-    if target.read_text(encoding="utf-8")==output: print("No changes; skip GitHub update."); return
-    target.write_text(output,encoding="utf-8",newline="\n")
+    old_text=target.read_text(encoding="utf-8")
+    try:
+        old_payload=json.loads(old_text.split("=",1)[1].rsplit(";",1)[0])
+        if old_payload.get("events")==events:
+            print("No event changes; GitHub update skipped."); return
+    except Exception:
+        pass
+    output="window.KDATA="+json.dumps({"generatedAt":datetime.now().astimezone().date().isoformat(),"total":len(events),"events":events},ensure_ascii=False,separators=(",",":"))+";\\n"
+    target.write_text(output,encoding="utf-8",newline="\\n")
     if git("branch","--show-current")!="main": raise RuntimeError("Safety stop: current branch must be main.")
     git("add","--","data.js")
     if not git("status","--porcelain","--","data.js"): print("No staged changes."); return
