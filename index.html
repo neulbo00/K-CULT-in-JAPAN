@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#090b10">
 <meta name="description" content="일본 한류 이벤트와 공연 일정을 데이터로 살펴보는 K-CULT in JAPAN">
 <title>K-CULT in JAPAN | Japan Hallyu Intelligence</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -142,6 +143,30 @@ body{
 #schedule .filter[aria-pressed=true]{background:rgba(93,145,223,.13);border-color:rgba(93,145,223,.48);color:var(--blue-soft)}
 @media(max-width:760px){.period-panel{align-items:stretch}.period-field{flex:1}.period-field select,.period-field input{width:100%}.period-help{margin-left:0;max-width:none}.bar-row{grid-template-columns:86px minmax(40px,1fr) 30px}}
 
+
+/* Japan Map */
+.region-map-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,.65fr);gap:14px;align-items:stretch}
+.region-map-card,.region-detail-card{background:linear-gradient(145deg,rgba(93,145,223,.045),transparent 65%),var(--panel);border:1px solid rgba(93,145,223,.22);border-radius:15px;padding:14px;min-width:0}
+.region-map-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:10px;margin-bottom:10px}
+.region-map-meta strong{color:var(--blue-soft);font:500 11px var(--mono)}
+#region-map{height:500px;width:100%;border-radius:10px;background:#0a111d;overflow:hidden}
+.region-legend{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px;color:var(--muted);font-size:9px}
+.region-legend span{display:inline-flex;align-items:center;gap:5px}
+.region-legend i{display:inline-block;width:10px;height:10px;border:1px solid rgba(255,255,255,.12);border-radius:3px}
+.region-detail-card h3{font-size:13px;margin:0 0 5px}
+.region-detail-card p{font-size:10px;color:var(--muted);margin:0 0 12px;line-height:1.6}
+.region-event-list{display:grid;gap:8px;max-height:440px;overflow:auto}
+.region-event{padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.018)}
+.region-event strong{display:block;font-size:10px;line-height:1.5}
+.region-event small{display:block;color:var(--muted);font:9px var(--mono);margin-top:4px}
+.region-event a{display:inline-block;color:var(--blue-soft);font-size:9px;margin-top:4px}
+.region-footnote{font-size:9px;color:var(--muted);line-height:1.6;margin:10px 2px 0}
+.leaflet-container{font-family:var(--sans);color:var(--text)}
+.leaflet-control-attribution{background:rgba(9,11,16,.8)!important;color:#8492a8!important;font-size:8px!important}
+.leaflet-tooltip{background:#111a28;border:1px solid #33445d;color:#eef4ff;box-shadow:none;font-size:10px}
+.leaflet-tooltip:before{border-top-color:#33445d}
+@media(max-width:760px){.region-map-layout{grid-template-columns:1fr}#region-map{height:420px}.region-event-list{max-height:260px}}
+
 </style>
 </head>
 <body>
@@ -194,8 +219,20 @@ body{
  </section>
 
  <section id="regions">
-  <div class="section-head"><div><div class="kicker">04 / Japan Map</div><h2>일본 지역별 한류 분포</h2><p>지역 지도와 권역별 통계를 연결하는 영역</p></div></div>
-  <div class="region-empty"><div><div class="region-symbol">JP</div><strong>지역 데이터 연결 준비 중</strong><p>현재 공개용 데이터 파일에는 권역별 이벤트 수가 포함되어 있지 않습니다. Notion의 지역 속성을 연결한 뒤 지도와 차트를 실제 집계값으로 표시합니다.</p><div class="region-tags"><span>北海道</span><span>東北</span><span>関東</span><span>中部</span><span>関西</span><span>中国</span><span>四国</span><span>九州・沖縄</span></div></div></div>
+  <div class="section-head"><div><div class="kicker">04 / Japan Map</div><h2>일본 지역별 한류 분포</h2><p id="region-caption">공식 출처로 개최지가 확인된 이벤트만 표시 · 기존 기간 필터 연동</p></div><div class="kicker" id="region-coverage">LOCATION DATA / LOADING</div></div>
+  <div class="region-map-layout">
+   <div class="region-map-card">
+    <div class="region-map-meta"><span>도도부현별 개최 이벤트 수</span><strong id="region-total">--</strong></div>
+    <div id="region-map" role="img" aria-label="일본 47개 도도부현별 확인된 한류 이벤트 분포 지도"></div>
+    <div class="region-legend"><span><i style="background:#182536"></i>0건</span><span><i style="background:#31577f"></i>1건</span><span><i style="background:#5d91df"></i>2건 이상</span></div>
+    <p class="region-footnote">지도는 개최지 확인이 끝난 이벤트만 집계합니다. 여러 도도부현에서 열린 투어는 각 개최 지역에 각각 반영되므로 지역별 합계는 고유 이벤트 전체 수와 일치하지 않을 수 있습니다.</p>
+   </div>
+   <div class="region-detail-card">
+    <h3 id="region-selected-title">지역을 선택해 주세요</h3>
+    <p id="region-selected-note">지도에서 도도부현을 선택하면 해당 지역의 확인된 이벤트와 개최 장소를 표시합니다.</p>
+    <div class="region-event-list" id="region-event-list"><div class="empty">지도 데이터 불러오는 중</div></div>
+   </div>
+  </div>
  </section>
 
  <section id="schedule">
@@ -207,7 +244,9 @@ body{
  </section>
 </main>
 <footer class="wrap footer"><span>© NEULBO / K-CULT IN JAPAN</span><span>DATA SOURCE · NOTION HALLYU EVENT DATABASE</span></footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="data.js"></script>
+<script src="event_locations.js"></script>
 <script>
 (function(){
  "use strict";
@@ -327,12 +366,47 @@ body{
   $("category-quality").textContent="분류 미입력 "+fmt(unclassified)+"건 · "+pct(unclassified,n)+"% / 선택 기간 기준. 원본 Notion 카테고리가 비어 있는 레코드입니다.";
   $("trend-caption").textContent="공연 시작일 기준 · "+fmt(n)+"건";
   renderMonths(rows);renderBars("types",types,n,"type");renderBars("categories",cats,n,"category");renderBars("promoters",promoters,n,null);
-  renderFilterButtons();renderSchedule();
+  renderFilterButtons();renderSchedule();renderRegionMap();
+ }
+ var locationData=window.KLOCATIONS&&Array.isArray(window.KLOCATIONS.events)?window.KLOCATIONS.events:[];
+ var regionMap=null,regionLayer=null,selectedPrefecture=null,regionFeatures=[];
+ function locationsInRange(){return locationData.filter(function(x){return x.start&&x.start>=start&&x.start<=end;});}
+ function regionRows(code){return locationsInRange().filter(function(x){return x.prefCode===code;}).sort(function(a,b){return a.start.localeCompare(b.start)||a.eventName.localeCompare(b.eventName);});}
+ function renderRegionSelection(){
+  var title=$("region-selected-title"),note=$("region-selected-note"),list=$("region-event-list");list.replaceChildren();
+  if(!selectedPrefecture){title.textContent="지역을 선택해 주세요";note.textContent="지도에서 도도부현을 선택하면 해당 지역의 확인된 이벤트와 개최 장소를 표시합니다.";return;}
+  var feature=regionFeatures.find(function(f){return String(f.id).padStart(2,"0")===selectedPrefecture;});
+  var prefecture=feature&&feature.properties?feature.properties.name:selectedPrefecture;
+  var rows=regionRows(selectedPrefecture);
+  title.textContent=prefecture+" · "+fmt(rows.length)+"건";
+  note.textContent="선택 기간 내 개최지가 확인된 이벤트입니다. 지역 정보가 없는 이벤트는 포함하지 않습니다.";
+  if(!rows.length){var empty=document.createElement("div");empty.className="empty";empty.textContent="선택 기간에 확인된 이벤트가 없습니다.";list.appendChild(empty);return;}
+  rows.forEach(function(x){var card=document.createElement("div");card.className="region-event";var name=document.createElement("strong");name.textContent=x.eventName;var meta=document.createElement("small");meta.textContent=dateLabel(x.start)+" · "+x.city+" · "+x.venue;var link=document.createElement("a");link.href=x.evidenceUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent="개최지 근거 확인 ↗";card.append(name,meta,link);list.appendChild(card);});
+ }
+ function regionCountMap(){var map={};locationsInRange().forEach(function(x){if(!map[x.prefCode])map[x.prefCode]=new Set();map[x.prefCode].add(x.eventName);});return map;}
+ function renderRegionMap(){
+  var countsByPref=regionCountMap(),known=new Set(locationData.map(function(x){return x.eventName;})).size;
+  $("region-coverage").textContent="확인 "+fmt(known)+" / "+fmt(D.total)+"건";
+  $("region-total").textContent=fmt(locationsInRange().length)+"개 개최지 기록";
+  if(!regionLayer){renderRegionSelection();return;}
+  regionLayer.setStyle(function(feature){var code=String(feature.id).padStart(2,"0"),n=countsByPref[code]?countsByPref[code].size:0;return{color:n?"#6d94c2":"#344255",weight:n?1.4:.8,opacity:1,fillColor:n>=2?"#5d91df":n===1?"#31577f":"#182536",fillOpacity:n?.88:.72};});
+  regionLayer.eachLayer(function(layer){var code=String(layer.feature.id).padStart(2,"0"),n=countsByPref[code]?countsByPref[code].size:0,name=layer.feature.properties.name;layer.unbindTooltip();layer.bindTooltip(name+" · "+n+"건");});
+  renderRegionSelection();
+ }
+ function initRegionMap(){
+  if(!window.L||!window.KLOCATIONS){$("region-event-list").textContent="지도 라이브러리 또는 지역 데이터를 불러오지 못했습니다.";return;}
+  fetch("japan_prefectures.geojson").then(function(response){if(!response.ok)throw new Error("map data unavailable");return response.json();}).then(function(geo){
+   regionFeatures=geo.features||[];regionMap=L.map("region-map",{zoomControl:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,attributionControl:true});
+   regionLayer=L.geoJSON(geo,{style:function(feature){return{color:"#344255",weight:.8,fillColor:"#182536",fillOpacity:.72};},onEachFeature:function(feature,layer){layer.on("click",function(){selectedPrefecture=String(feature.id).padStart(2,"0");renderRegionMap();});}}).addTo(regionMap);
+   regionMap.fitBounds(regionLayer.getBounds(),{padding:[8,8]});regionMap.setMaxBounds(regionLayer.getBounds().pad(.08));
+   renderRegionMap();
+  }).catch(function(){ $("region-event-list").textContent="도도부현 지도 데이터를 불러오지 못했습니다.";});
  }
  $("updated").textContent="DATA / "+D.generatedAt;
  $("period-preset").addEventListener("change",updateRange);
  $("period-start").addEventListener("change",setPresetFromDates);$("period-end").addEventListener("change",setPresetFromDates);
  $("search").addEventListener("input",function(e){query=e.target.value.trim();renderSchedule();});
+ initRegionMap();
  renderAll();
 })();
 </script>
