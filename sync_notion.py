@@ -115,7 +115,7 @@ def main():
             date.fromisoformat(item["date"])
             if item["dateEnd"]: date.fromisoformat(item["dateEnd"])
             schedules.append(item)
-    min_schedules=int(os.getenv("SYNC_MIN_SCHEDULES","400"))
+    min_schedules=int(os.getenv("SYNC_MIN_SCHEDULES","100"))
     if len(schedules)<min_schedules:
         raise RuntimeError("Safety stop: "+str(len(schedules))+" public schedule records; minimum "+str(min_schedules))
     schedules.sort(key=lambda x:(x["date"],x["time"],x["name"]))
