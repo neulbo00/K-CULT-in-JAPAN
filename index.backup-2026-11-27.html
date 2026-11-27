@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090b10">
+<meta name="description" content="일본 한류 이벤트와 공연 일정을 데이터로 살펴보는 K-CULT in JAPAN">
+<title>K-CULT in JAPAN | Japan Hallyu Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#090b10;--panel:#11151d;--panel2:#151a24;--line:#252c38;--text:#f3f5f8;--muted:#8d97a8;--soft:#bbc3cf;--red:#ed4962;--red2:#a92e49;--pink:#ff8298;--green:#72d6b0;--radius:18px;--mono:"DM Mono",monospace;--sans:"Manrope","Noto Sans KR",system-ui,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:86px}
+body{margin:0;background:radial-gradient(ellipse at 80% -15%,rgba(255,64,87,.12),transparent 38%),var(--bg);color:var(--text);font:400 14px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer}
+.wrap{width:min(1240px,calc(100% - 44px));margin:auto}
+.topbar{height:70px;border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:20;background:rgba(9,11,16,.88);backdrop-filter:blur(18px)}
+.nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:.07em;font-size:15px}
+.brand-mark{width:27px;height:27px;border-radius:8px;background:var(--red);display:grid;place-items:center;color:#fff;font:800 14px var(--mono);box-shadow:0 0 24px rgba(255,64,87,.25)}
+.brand small{display:block;color:var(--muted);font:500 9px var(--mono);letter-spacing:.16em;margin-top:-2px}
+.navlinks{display:flex;gap:24px;color:var(--muted);font-size:12px}
+.navlinks a:hover{color:var(--text)}
+.updated{font:11px var(--mono);color:var(--muted)}
+.hero{padding:64px 0 34px;display:grid;grid-template-columns:1.3fr .7fr;gap:30px;align-items:end}
+.eyebrow{color:var(--red);font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;display:flex;align-items:center;gap:9px}
+.eyebrow:before{content:"";width:22px;height:1px;background:var(--red)}
+h1{font-size:clamp(34px,5vw,62px);line-height:1.08;letter-spacing:-.055em;margin:17px 0 16px;font-weight:800}
+h1 span{color:var(--red)}
+.lead{max-width:620px;color:var(--muted);font-size:14px;margin:0}
+.hero-side{border-left:1px solid var(--line);padding:5px 0 5px 25px;color:var(--muted);font-size:12px}
+.hero-side strong{display:block;color:var(--text);font:500 22px var(--mono);margin-bottom:4px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:34px 0 14px}
+.section-head h2{font-size:16px;letter-spacing:-.02em;margin:0;font-weight:700}
+.section-head p{font-size:11px;color:var(--muted);margin:3px 0 0}
+.kicker{font:10px var(--mono);letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{background:linear-gradient(145deg,rgba(255,255,255,.035),transparent 60%),var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;min-width:0}
+.stat-label{color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:8px}
+.stat-value{font:500 clamp(27px,3vw,38px)/1.2 var(--mono);letter-spacing:-.06em;margin:13px 0 6px}
+.stat-value em{font:500 11px var(--sans);letter-spacing:0;color:var(--muted);font-style:normal;margin-left:5px}
+.stat-foot{font-size:10px;color:var(--muted)}
+.accent{color:var(--red)}
+.two-col{display:grid;grid-template-columns:1.25fr .75fr;gap:14px}
+.chart-card{padding:22px}
+.chart-title{font-size:13px;font-weight:700;margin:0}
+.chart-sub{color:var(--muted);font-size:10px;margin:3px 0 18px}
+.month-chart{height:190px;display:flex;align-items:end;gap:clamp(3px,1vw,10px);padding:4px 0 0;border-bottom:1px solid var(--line)}
+.month{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:7px}
+.month-count{font:10px var(--mono);color:var(--soft)}
+.month-bar{width:min(100%,27px);min-height:3px;background:#454e5f;border-radius:5px 5px 2px 2px;transition:height .4s}
+.month.current .month-bar{background:linear-gradient(180deg,var(--pink),var(--red));box-shadow:0 0 18px rgba(255,64,87,.22)}
+.month.current .month-count,.month.current .month-label{color:var(--pink)}
+.month-label{font:10px var(--mono);color:var(--muted)}
+.year-labels{display:flex;justify-content:space-around;color:var(--muted);font:10px var(--mono);padding-top:9px}
+.legend{display:flex;gap:15px;flex-wrap:wrap;margin-top:14px;color:var(--muted);font-size:10px}
+.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:6px}
+.insight-note{margin:12px 0 0;padding:10px 12px;border-left:2px solid var(--red);background:rgba(255,64,87,.045);color:var(--soft);font-size:10px;line-height:1.7}
+.bars{display:grid;gap:12px}
+.bar-row{display:grid;grid-template-columns:86px 1fr 30px;gap:9px;align-items:center;font-size:11px}
+.bar-name{color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:6px;background:#252c38;border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--red2),var(--red))}
+.bar-num{text-align:right;color:var(--soft);font:10px var(--mono)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.analytics-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.region-empty{min-height:230px;display:grid;place-items:center;text-align:center;border:1px dashed #343d4c;border-radius:13px;padding:24px;background:rgba(255,255,255,.012)}
+.region-symbol{width:54px;height:54px;border:1px solid #3a4351;border-radius:50%;display:grid;place-items:center;color:var(--red);font:18px var(--mono);margin:0 auto 12px}
+.region-empty strong{font-size:13px}
+.region-empty p{max-width:360px;color:var(--muted);font-size:11px;margin:6px auto 0}
+.region-tags{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:14px}
+.region-tags span{border:1px solid var(--line);border-radius:99px;padding:3px 8px;color:var(--muted);font-size:9px}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.search{flex:1;min-width:190px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:10px 13px;outline:none;font-size:12px}
+.search:focus{border-color:var(--red)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filter{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:7px 11px;font-size:10px}
+.filter[aria-pressed=true]{background:rgba(255,64,87,.12);border-color:rgba(255,64,87,.5);color:#ff9aa7}
+.events{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.event{display:grid;grid-template-columns:76px 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;min-width:0}
+.event-date{font:11px/1.5 var(--mono);color:var(--red);border-right:1px solid var(--line);padding-right:10px}
+.event-date small{display:block;color:var(--muted);font:9px var(--sans);margin-top:3px}
+.event-name{font-size:12px;font-weight:600;line-height:1.5;overflow-wrap:anywhere}
+.event-meta{color:var(--muted);font-size:10px;margin-top:6px}
+.pill{display:inline-block;color:#ff9aa7;background:rgba(255,64,87,.1);border:1px solid rgba(255,64,87,.18);border-radius:4px;padding:1px 6px;margin-right:6px;font-size:9px}
+.empty{padding:30px;text-align:center;color:var(--muted);font-size:12px;grid-column:1/-1}
+.disclaimer{margin:14px 0 0;color:var(--muted);font-size:10px;line-height:1.7}
+.footer{border-top:1px solid var(--line);margin-top:54px;padding:22px 0 35px;color:var(--muted);font-size:10px;display:flex;justify-content:space-between;gap:14px}
+@media(max-width:760px){.wrap{width:min(100% - 30px,600px)}.analytics-grid{grid-template-columns:1fr}.navlinks{display:none}.hero{grid-template-columns:1fr;padding:43px 0 24px;gap:20px}.hero-side{border-left:0;border-top:1px solid var(--line);padding:14px 0 0}.stats{grid-template-columns:repeat(2,1fr);gap:8px}.card{padding:16px}.stat-value{font-size:29px}.two-col,.split{grid-template-columns:1fr}.events{grid-template-columns:1fr}.section-head{margin-top:27px}.chart-card{padding:17px}.month-chart{height:160px}.footer{flex-direction:column}}
+@media(max-width:390px){.bar-row{grid-template-columns:76px 1fr 25px}.event{grid-template-columns:66px 1fr;padding:12px}.month-label{font-size:9px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+/* K-CULT color journey: restrained red glow above, deep blue glow below */
+:root{--blue:#5d91df;--blue2:#315f9e;--blue-soft:#91b8f0}
+body{
+ background:
+  radial-gradient(ellipse at 18% -18%,rgba(157,35,62,.25),transparent 48%),
+  radial-gradient(ellipse at 88% 112%,rgba(39,91,157,.24),transparent 46%),
+  linear-gradient(180deg,#170c14 0%,#0c0c13 34%,#090d17 63%,#091426 100%);
+ background-color:var(--bg);
+ background-attachment:fixed;
+}
+.topbar{background:rgba(10,11,18,.86);border-bottom-color:rgba(255,112,130,.10)}
+#regions .kicker,#schedule .kicker{color:var(--blue-soft)}
+#regions .region-symbol{color:var(--blue-soft);border-color:rgba(93,145,223,.35)}
+#regions .region-empty{border-color:rgba(93,145,223,.28);background:linear-gradient(145deg,rgba(93,145,223,.045),transparent 65%),rgba(255,255,255,.012)}
+#schedule .search:focus{border-color:var(--blue)}
+#schedule .filter[aria-pressed=true]{background:rgba(93,145,223,.13);border-color:rgba(93,145,223,.48);color:var(--blue-soft)}
+#schedule .event-date{color:var(--blue-soft)}
+#schedule .pill{color:var(--blue-soft);background:rgba(93,145,223,.10);border-color:rgba(93,145,223,.20)}
+.footer{border-top-color:rgba(93,145,223,.20)}
+
+.period-panel{display:flex;align-items:end;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:18px 0 14px}
+.period-field{display:grid;gap:4px;color:var(--muted);font-size:10px}
+.period-field select,.period-field input{background:#0d1119;border:1px solid var(--line);border-radius:8px;color:var(--text);padding:9px 10px;font:11px var(--sans);min-width:130px}
+.period-help{font-size:10px;color:var(--muted);margin-left:auto;max-width:280px}
+.bar-fill{display:block;min-width:2px}
+.bar-row{grid-template-columns:minmax(74px,112px) minmax(50px,1fr) 34px}
+.bar-row[data-kind]{cursor:pointer}
+.bar-row[data-kind]:hover .bar-name{color:var(--pink)}
+.bar-pct{display:block;color:var(--muted);font-size:9px;margin-top:2px}
+.chart-note{font-size:10px;color:var(--muted);margin:12px 0 0;line-height:1.6}
+.analytics-grid .card{min-width:0}
+.type-guide{display:grid;gap:7px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+.type-guide div{display:grid;grid-template-columns:82px 1fr;gap:8px;font-size:10px;line-height:1.5}
+.type-guide b{color:var(--soft);font-weight:600}
+.type-guide span{color:var(--muted)}
+#schedule .status-filters{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+#schedule .status-filter{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:7px 12px;font-size:10px}
+#schedule .status-filter[aria-pressed=true]{background:rgba(93,145,223,.13);border-color:rgba(93,145,223,.48);color:var(--blue-soft)}
+.event{grid-template-columns:78px minmax(0,1fr)}
+.event-date{font-size:11px}
+.event-extra{font-size:10px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}
+.event-source{display:inline-block;color:var(--blue-soft);font-size:10px;margin-top:6px}
+.event-status{display:inline-block;font-size:9px;padding:1px 6px;border-radius:4px;margin-right:6px;border:1px solid var(--line);color:var(--muted)}
+.event-status.upcoming{color:#9fc6ff;border-color:#315f9e;background:rgba(49,95,158,.13)}
+.event-status.ongoing{color:#83e1bd;border-color:#327c63;background:rgba(50,124,99,.13)}
+.event-status.past{color:#aab1bd}
+#schedule .filter[aria-pressed=true]{background:rgba(93,145,223,.13);border-color:rgba(93,145,223,.48);color:var(--blue-soft)}
+@media(max-width:760px){.period-panel{align-items:stretch}.period-field{flex:1}.period-field select,.period-field input{width:100%}.period-help{margin-left:0;max-width:none}.bar-row{grid-template-columns:86px minmax(40px,1fr) 30px}}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+ <div class="wrap nav">
+  <a class="brand" href="#"><span class="brand-mark">K</span><span>NEULBO / K-CULT<small>JAPAN HALLYU INTELLIGENCE</small></span></a>
+  <nav class="navlinks"><a href="#overview">OVERVIEW</a><a href="#trends">TRENDS</a><a href="#analytics">ANALYTICS</a><a href="#regions">REGIONS</a><a href="#schedule">SCHEDULE</a></nav>
+  <div class="updated" id="updated">DATA / --</div>
+ </div>
+</header>
+<main class="wrap">
+ <section class="hero">
+  <div><div class="eyebrow">K-CULT IN JAPAN / 02</div><h1>한류의 흐름을<br><span>숫자와 일정</span>으로 읽다.</h1><p class="lead">일본에서 열리는 K-POP 공연부터 드라마·음악·문화 이벤트까지. 흩어진 한류 이벤트를 하나의 흐름으로 살펴봅니다.</p></div>
+  <div class="hero-side"><strong id="hero-total">---</strong>등록된 한류 이벤트 · Notion 데이터 집계 기준<br><span id="hero-period">데이터 기준일 확인 중</span></div>
+ </section>
+
+ <section id="overview">
+  <div class="section-head"><div><div class="kicker">01 / Snapshot</div><h2>한류 이벤트 현황</h2><p id="snapshot-caption">선택한 기간의 이벤트 등록 현황 · 공연 시작일 기준</p></div></div>
+  <div class="period-panel" aria-label="통계 기간 선택">
+   <label class="period-field">조회 기간<select id="period-preset"><option value="2026" selected>2026년</option><option value="2025">2025년</option><option value="2027">2027년</option><option value="all">전체 기간</option><option value="custom">직접 설정</option></select></label>
+   <label class="period-field">시작일<input id="period-start" type="date" value="2026-01-01"></label>
+   <label class="period-field">종료일<input id="period-end" type="date" value="2026-12-31"></label>
+   <div class="period-help">모든 통계와 일정 목록은 공연 시작일을 기준으로 같은 기간을 적용합니다.</div>
+  </div>
+  <div class="stats">
+   <article class="card"><div class="stat-label">PERIOD EVENTS <span class="accent">●</span></div><div class="stat-value" id="total">---</div><div class="stat-foot">공연 시작일이 선택 기간에 포함된 건수</div></article>
+   <article class="card"><div class="stat-label">EVENT TYPES</div><div class="stat-value" id="type-count">---</div><div class="stat-foot">등록된 이벤트 유형</div></article>
+   <article class="card"><div class="stat-label">CATEGORIES</div><div class="stat-value" id="cat-count">---</div><div class="stat-foot">한류 카테고리 종류</div></article>
+   <article class="card"><div class="stat-label">예정 · 진행 중</div><div class="stat-value" id="up-count">---</div><div class="stat-foot">선택 기간 내 아직 종료되지 않은 이벤트</div></article>
+  </div>
+ </section>
+
+ <section id="trends">
+  <div class="section-head"><div><div class="kicker">02 / Trends</div><h2>이벤트 트렌드</h2><p id="trend-caption">선택한 기간의 월별 일정 흐름</p></div></div>
+  <article class="card chart-card"><h3 class="chart-title">월별 이벤트 추이</h3><p class="chart-sub">공연 시작일 기준으로 집계된 월별 건수</p><div class="month-chart" id="months"></div><div class="year-labels" id="years"></div><div class="legend"><span><i></i>월별 이벤트</span><span>막대 높이는 월별 건수 기준</span></div><p class="insight-note" id="monthly-insight"></p></article>
+  <p class="disclaimer" id="integrity-note"></p>
+ </section>
+
+ <section id="analytics">
+  <div class="section-head"><div><div class="kicker">03 / Analytics</div><h2>이벤트 구성 분석</h2><p>항목을 누르면 해당 조건의 일정 목록을 확인할 수 있습니다.</p></div></div>
+  <div class="analytics-grid">
+   <article class="card chart-card"><h3 class="chart-title">이벤트 유형</h3><p class="chart-sub">행사의 형식 · 건수와 구성비</p><div class="bars" id="types"></div>
+   <div class="type-guide">
+    <div><b>이벤트</b><span>앨범 발매·프로모션·특전 등 일반 행사</span></div><div><b>콘서트</b><span>가수·뮤지션의 라이브 공연</span></div><div><b>팬미팅</b><span>아티스트와 팬의 만남 중심 행사</span></div><div><b>팬콘</b><span>공연과 팬미팅 요소를 결합한 행사</span></div><div><b>페스티벌</b><span>복수 출연자 또는 프로그램 중심 축제</span></div><div><b>쇼케이스</b><span>신곡·앨범·아티스트 소개 무대</span></div><div><b>문화행사</b><span>한국 문화 교류 및 체험 행사</span></div><div><b>전시/체험</b><span>전시·팝업·체험형 행사</span></div><div><b>기타</b><span>위 유형에 명확히 속하지 않는 항목</span></div>
+   </div></article>
+   <article class="card chart-card"><h3 class="chart-title">한류 카테고리</h3><p class="chart-sub">콘텐츠 분야 · 미분류 포함</p><div class="bars" id="categories"></div>
+   <p class="insight-note" id="category-quality"></p><p class="chart-note">K-POP: 아이돌·대중음악 / K-Drama: 드라마·배우 / K-Music: 한국 음악 전반 / K-Culture: 문화 / K-Content: 영상·디지털 콘텐츠 / K-Lifestyle: 뷰티·패션·푸드 등 생활문화. 미분류는 Notion 카테고리가 비어 있는 원본 데이터입니다.</p></article>
+   <article class="card chart-card"><h3 class="chart-title">프로모터 TOP</h3><p class="chart-sub">데이터에 기록된 주요 주최·프로모터</p><div class="bars" id="promoters"></div><p class="chart-note">프로모터 정보가 비어 있는 이벤트는 순위 집계에서 제외합니다. 원본 표기 기준으로 집계하며, 동일 주체 여부가 확인되지 않은 표기는 자동 통합하지 않습니다.</p></article>
+  </div>
+ </section>
+
+ <section id="regions">
+  <div class="section-head"><div><div class="kicker">04 / Japan Map</div><h2>일본 지역별 한류 분포</h2><p>지역 지도와 권역별 통계를 연결하는 영역</p></div></div>
+  <div class="region-empty"><div><div class="region-symbol">JP</div><strong>지역 데이터 연결 준비 중</strong><p>현재 공개용 데이터 파일에는 권역별 이벤트 수가 포함되어 있지 않습니다. Notion의 지역 속성을 연결한 뒤 지도와 차트를 실제 집계값으로 표시합니다.</p><div class="region-tags"><span>北海道</span><span>東北</span><span>関東</span><span>中部</span><span>関西</span><span>中国</span><span>四国</span><span>九州・沖縄</span></div></div></div>
+ </section>
+
+ <section id="schedule">
+  <div class="section-head"><div><div class="kicker">05 / Schedule</div><h2>공연·이벤트 아카이브</h2><p id="schedule-note">선택한 기간의 과거·진행 중·예정 이벤트</p></div><div class="kicker">SEARCH / FILTER</div></div>
+  <div class="status-filters" id="status-filters"></div>
+  <div class="toolbar"><input id="search" class="search" type="search" placeholder="아티스트·이벤트명·프로모터 검색" aria-label="일정 검색"><div class="filters" id="filters"></div><div class="filters" id="category-filters"></div></div>
+  <div class="events" id="events"></div>
+  <p class="disclaimer" id="archive-note">Notion 마스터 DB의 전체 이벤트 데이터를 기준으로 표시합니다. 날짜가 없는 이벤트는 기간별 통계와 일정 목록에서 제외됩니다.</p>
+ </section>
+</main>
+<footer class="wrap footer"><span>© NEULBO / K-CULT IN JAPAN</span><span>DATA SOURCE · NOTION HALLYU EVENT DATABASE</span></footer>
+<script src="data.js"></script>
+<script>
+(function(){
+ "use strict";
+ var D=window.KDATA;if(!D||!Array.isArray(D.events)){document.getElementById("events").textContent="데이터를 불러오지 못했습니다.";return;}
+ var $=function(id){return document.getElementById(id);},today=D.generatedAt;
+ var fmt=function(n){return Number(n||0).toLocaleString("ko-KR");};
+ var dateLabel=function(s){return s?s.replace(/-/g,"."):"날짜 미등록";};
+ var start="2026-01-01",end="2026-12-31",status="전체",typeFilter="전체",catFilter="전체",query="";
+ var typeNames=["이벤트","콘서트","팬미팅","팬콘","페스티벌","쇼케이스","기타","문화행사","전시/체험","시사회"];
+ var catNames=["K-POP","K-Drama","K-Music","K-Culture","K-Lifestyle","K-Content","미분류"];
+ var typeDesc={"이벤트":"앨범 발매·프로모션·특전 등 일반 행사","콘서트":"가수·뮤지션의 라이브 공연","팬미팅":"아티스트와 팬의 만남 중심 행사","팬콘":"공연과 팬미팅 요소를 결합한 행사","페스티벌":"복수 출연자 또는 프로그램 중심 축제","쇼케이스":"신곡·앨범·아티스트 소개 무대","기타":"위 유형에 명확히 속하지 않는 항목","문화행사":"한국 문화 교류 및 체험 행사","전시/체험":"전시·팝업·체험형 행사","시사회":"영화·영상 콘텐츠 상영 행사"};
+ var inRange=function(e){return e.start&&e.start>=start&&e.start<=end;};
+ var rangeEvents=function(){return D.events.filter(inRange);};
+ var pct=function(n,total){return total?Math.round(n/total*1000)/10:0;};
+ var statusOf=function(e){if(e.start>today)return "예정";if(e.end&&e.end>=today)return "진행 중";return "종료";};
+ var statusKey=function(e){var s=statusOf(e);return s==="예정"?"upcoming":s==="진행 중"?"ongoing":"past";};
+ function updateRange(){
+  var preset=$("period-preset").value,nowYear=Number(today.slice(0,4));
+  if(preset==="all"){start="0001-01-01";end="9999-12-31";}
+  else if(preset==="custom"){start=$("period-start").value||"0001-01-01";end=$("period-end").value||"9999-12-31";}
+  else {start=preset+"-01-01";end=preset+"-12-31";}
+  $("period-start").value=start.startsWith("0001")?"":start;$("period-end").value=end.startsWith("9999")?"":end;
+  renderAll();
+ }
+ function setPresetFromDates(){ $("period-preset").value="custom";start=$("period-start").value||"0001-01-01";end=$("period-end").value||"9999-12-31";renderAll(); }
+ function counts(rows,key){var map={};rows.forEach(function(e){var k=e[key]||"미분류";map[k]=(map[k]||0)+1;});return Object.keys(map).map(function(k){return [k,map[k]];}).sort(function(a,b){return b[1]-a[1]||a[0].localeCompare(b[0],"ko");});}
+ var promoterAliases={
+  "FCLIVE ENTERTAINMENT":"FC LIVE ENTERTAINMENT",
+  "NATURESPACE":"NATURESPACE JAPAN",
+  "NATURESPACE Japan":"NATURESPACE JAPAN",
+  "PLUSWIN株式会社":"PLUSWIN",
+  "KISS Entertainment Inc.":"KISS Entertainment",
+  "株式会社フラウ・インターナショナル":"FRAU INTERNATIONAL",
+  "JJ Bliss":"JJ Bliss",
+  "合同会社 JJ Bliss":"JJ Bliss",
+  "株式会社Chapter-I":"Chapter-I",
+  "Universal Music Japan":"UNIVERSAL MUSIC JAPAN",
+  "株式会社インタラクティブメディアミックス":"IMX",
+  "株式会社インタラクティブメディアミックス（IMX）":"IMX",
+  "株式会社 J HARMONY":"J HARMONY",
+  "J HARMONY":"J HARMONY",
+  "WORLD ENTERTAINMENT合同会社":"WORLD ENTERTAINMENT"
+ };
+ function promoterCounts(rows){var map={};rows.forEach(function(e){var raw=e.promoter||"미분류";var key=promoterAliases[raw]||raw;map[key]=(map[key]||0)+1;});return Object.keys(map).map(function(k){return [k,map[k]];}).sort(function(a,b){return b[1]-a[1]||a[0].localeCompare(b[0],"ko");});}
+ function renderBars(id,rows,total,kind){
+  var root=$(id);root.replaceChildren();var max=Math.max.apply(null,rows.map(function(r){return r[1];}).concat([1]));
+  rows.forEach(function(r){
+   var row=document.createElement("div");row.className="bar-row";if(kind)row.dataset.kind=kind;
+   var name=document.createElement("span");name.className="bar-name";name.textContent=r[0];
+   var pctEl=document.createElement("small");pctEl.className="bar-pct";pctEl.textContent=pct(r[1],total)+"%";name.appendChild(pctEl);
+   var track=document.createElement("span");track.className="bar-track";var fill=document.createElement("span");fill.className="bar-fill";fill.style.width=(r[1]/max*100)+"%";track.appendChild(fill);
+   var num=document.createElement("span");num.className="bar-num";num.textContent=fmt(r[1]);row.append(name,track,num);
+   if(kind)row.addEventListener("click",function(){if(kind==="type"){typeFilter=r[0];catFilter="전체";}else{catFilter=r[0];typeFilter="전체";}renderFilterButtons();renderSchedule();$("schedule").scrollIntoView({behavior:"smooth"});});
+   root.appendChild(row);
+  });
+ }
+ function renderMonths(rows){
+  var map={};rows.forEach(function(e){var m=e.start.slice(0,7);map[m]=(map[m]||0)+1;});
+  var months=Object.keys(map).sort(),max=Math.max.apply(null,months.map(function(m){return map[m];}).concat([1]));
+  var ranked=months.slice().sort(function(a,b){return map[b]-map[a]||a.localeCompare(b);}).slice(0,2);
+  if(!ranked.length){$("monthly-insight").textContent="선택 기간에 집계할 시작일 데이터가 없습니다.";}
+  else{$("monthly-insight").textContent="등록 건수가 많은 달: "+ranked.map(function(m){return m.replace("-",".")+" "+fmt(map[m])+"건";}).join(" · ")+". 공연 시작일 기준 등록 건수이며, 기준일 이후 월에는 예정 일정이 포함됩니다."; }
+  $("months").replaceChildren();$("years").replaceChildren();
+  months.forEach(function(m){var el=document.createElement("div");el.className="month"+(m===today.slice(0,7)?" current":"");
+   var count=document.createElement("span");count.className="month-count";count.textContent=map[m];
+   var bar=document.createElement("div");bar.className="month-bar";bar.style.height=(map[m]/max*125)+"px";
+   var label=document.createElement("span");label.className="month-label";label.textContent=m.slice(5);
+   el.append(count,bar,label);$("months").appendChild(el);});
+  var years={};months.forEach(function(m){var y=m.slice(0,4);years[y]=(years[y]||0)+1;});
+  Object.keys(years).forEach(function(y){var s=document.createElement("span");s.textContent=y+" · "+fmt(years[y])+"건";$("years").appendChild(s);});
+ }
+ function makeButtons(id,items,selected,handler,klass){
+  var root=$(id);root.replaceChildren();items.forEach(function(t){var b=document.createElement("button");b.type="button";b.className=klass;b.textContent=t;b.setAttribute("aria-pressed",String(t===selected));b.addEventListener("click",function(){handler(t);});root.appendChild(b);});
+ }
+ function renderFilterButtons(){
+  var rows=rangeEvents(),types=counts(rows,"type").map(function(x){return x[0];}),cats=counts(rows,"category").map(function(x){return x[0];});
+  makeButtons("status-filters",["전체","예정","진행 중","종료"],status,function(v){status=v;renderFilterButtons();renderSchedule();},"status-filter");
+  makeButtons("filters",["전체"].concat(types),typeFilter,function(v){typeFilter=v;renderFilterButtons();renderSchedule();},"filter");
+  makeButtons("category-filters",["전체"].concat(cats),catFilter,function(v){catFilter=v;renderFilterButtons();renderSchedule();},"filter");
+ }
+ function renderSchedule(){
+  var all=rangeEvents(),list=all.filter(function(e){
+   var matchStatus=status==="전체"||statusOf(e)===status;
+   var matchType=typeFilter==="전체"||e.type===typeFilter;
+   var matchCat=catFilter==="전체"||(e.category||"미분류")===catFilter;
+   var hay=(e.name+" "+e.artist+" "+e.promoter+" "+e.type+" "+e.category).toLowerCase();
+   return matchStatus&&matchType&&matchCat&&(!query||hay.indexOf(query.toLowerCase())!==-1);
+  });
+  list.sort(function(a,b){return a.start.localeCompare(b.start)||a.name.localeCompare(b.name);});
+  $("events").replaceChildren();
+  $("schedule-note").textContent="기간 내 "+fmt(all.length)+"건 중 "+fmt(list.length)+"건 표시 · 과거·진행 중·예정 포함";
+  if(!list.length){var empty=document.createElement("div");empty.className="empty";empty.textContent="검색 조건에 맞는 이벤트가 없습니다."; $("events").appendChild(empty);return;}
+  list.forEach(function(e){
+   var card=document.createElement("article");card.className="event";
+   var date=document.createElement("div");date.className="event-date";date.textContent=dateLabel(e.start);
+   var endDate=document.createElement("small");endDate.textContent=e.end?"~ "+dateLabel(e.end):"단일일/종료일 미등록";date.appendChild(endDate);
+   var body=document.createElement("div"),name=document.createElement("div");name.className="event-name";name.textContent=e.name;
+   var meta=document.createElement("div");meta.className="event-meta";
+   var badge=document.createElement("span");badge.className="event-status "+statusKey(e);badge.textContent=statusOf(e);
+   var type=document.createElement("span");type.className="pill";type.textContent=e.type||"유형 미분류";
+   meta.append(badge,type,document.createTextNode(e.category||"카테고리 미분류"));
+   body.append(name,meta);
+   if(e.artist){var artist=document.createElement("div");artist.className="event-extra";artist.textContent="ARTIST · "+e.artist;body.appendChild(artist);}
+   if(e.promoter){var promoter=document.createElement("div");promoter.className="event-extra";promoter.textContent="PROMOTER · "+e.promoter;body.appendChild(promoter);}
+   if(e.source){var link=document.createElement("a");link.className="event-source";link.href=e.source;link.target="_blank";link.rel="noopener noreferrer";link.textContent="공식 출처 ↗";body.appendChild(link);}
+   card.append(date,body);$("events").appendChild(card);
+  });
+ }
+ function renderAll(){
+  var rows=rangeEvents(),n=rows.length,types=counts(rows,"type"),cats=counts(rows,"category"),promoters=promoterCounts(rows).filter(function(x){return x[0]!=="미분류";}).slice(0,10);
+  $("snapshot-caption").textContent=(start.startsWith("0001")&&end.startsWith("9999")?"전체 기간":dateLabel(start)+" ~ "+dateLabel(end))+" · 공연 시작일 기준";
+  $("total").textContent=fmt(n);$("type-count").textContent=types.length;$("cat-count").textContent=cats.length;
+  $("hero-total").textContent=fmt(D.total);$("hero-period").textContent="전체 DB "+fmt(D.total)+"건 · 데이터 기준 "+D.generatedAt;
+  $("up-count").textContent=fmt(rows.filter(function(e){return statusOf(e)!=="종료";}).length);
+  $("integrity-note").textContent="집계 기준: 공연 시작일이 선택 기간에 포함된 이벤트 "+fmt(n)+"건. 유형 합계 "+fmt(types.reduce(function(a,x){return a+x[1];},0))+"건, 카테고리 합계 "+fmt(cats.reduce(function(a,x){return a+x[1];},0))+"건. 미분류 카테고리 "+fmt((cats.find(function(x){return x[0]==="미분류";})||["",0])[1])+"건. 날짜 미등록 "+fmt(D.events.filter(function(e){return !e.start;}).length)+"건은 기간 통계에서 제외.";
+  var unclassified=(cats.find(function(x){return x[0]==="미분류";})||["",0])[1];
+  $("category-quality").textContent="분류 미입력 "+fmt(unclassified)+"건 · "+pct(unclassified,n)+"% / 선택 기간 기준. 원본 Notion 카테고리가 비어 있는 레코드입니다.";
+  $("trend-caption").textContent="공연 시작일 기준 · "+fmt(n)+"건";
+  renderMonths(rows);renderBars("types",types,n,"type");renderBars("categories",cats,n,"category");renderBars("promoters",promoters,n,null);
+  renderFilterButtons();renderSchedule();
+ }
+ $("updated").textContent="DATA / "+D.generatedAt;
+ $("period-preset").addEventListener("change",updateRange);
+ $("period-start").addEventListener("change",setPresetFromDates);$("period-end").addEventListener("change",setPresetFromDates);
+ $("search").addEventListener("input",function(e){query=e.target.value.trim();renderSchedule();});
+ renderAll();
+})();
+</script>
+</body>
+</html>
