@@ -44,3 +44,28 @@
 - `.env`, 토큰, 인증정보는 GitHub에 올리지 않습니다.
 - Cloudflare Worker는 사용하지 않습니다.
 - GitHub Pages는 정적 파일만 제공합니다. Notion API 토큰을 브라우저에 노출하지 않습니다.
+
+## Windows 자동 동기화 (매일 06:00)
+
+자동화 파일:
+- `sync_notion.py`: Notion 마스터 DB 전체 페이지네이션 조회, 데이터 검증, data.js 갱신
+- `sync.bat`: 수동/예약 실행 및 logs/sync.log 기록
+- `install_task.ps1`: 현재 Windows 사용자로 매일 오전 06:00 작업 스케줄러 등록
+- `.gitignore`: .env와 로그 파일을 Git에서 제외
+
+최초 설정:
+1. 이 저장소를 Windows PC의 기존 프로젝트 폴더에 최신 상태로 가져옵니다.
+2. 기존 로컬 `.env`에 이미 쓰고 있는 Notion 토큰 변수명을 유지합니다. 스크립트는 `NOTION_API_KEY`, `NOTION_TOKEN`, `NOTION_API_TOKEN`을 인식합니다.
+3. Git for Windows와 Git Credential Manager가 설정되어 있어야 합니다. 스크립트는 토큰을 저장하지 않고 기존 Git 인증을 사용해 `git push origin main`을 수행합니다.
+4. Python 3가 설치되어 있어야 합니다. 외부 Python 패키지는 필요하지 않습니다.
+5. PowerShell에서 프로젝트 폴더로 이동한 뒤 다음을 실행합니다:
+   `powershell -NoProfile -ExecutionPolicy Bypass -File .\install_task.ps1`
+6. 먼저 `sync.bat`를 직접 실행하고 `logs\sync.log`에서 성공 여부를 확인합니다.
+
+안전장치:
+- 활성 이벤트가 기본 최소 기준 250건보다 적으면 공개 데이터를 덮어쓰지 않습니다. 기준은 로컬 .env의 `SYNC_MIN_RECORDS`로 조정할 수 있습니다.
+- 데이터가 바뀌지 않으면 Git 커밋과 푸시를 생략합니다.
+- 현재 브랜치가 main이 아니면 자동 푸시를 중단합니다.
+- Notion 토큰은 로컬 .env에서만 읽으며 브라우저와 GitHub에 전송하지 않습니다.
+- PC가 꺼져 있거나 절전 상태라면 예약 시각에 실행되지 않을 수 있습니다. 작업 스케줄러의 놓친 작업 시작 옵션이 활성화되어 있습니다.
+- GitHub Pages는 main 변경 후 자동 배포됩니다.
