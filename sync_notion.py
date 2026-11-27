@@ -67,8 +67,8 @@ def main():
             print("No event changes; GitHub update skipped."); return
     except Exception:
         pass
-    output="window.KDATA="+json.dumps({"generatedAt":datetime.now().astimezone().date().isoformat(),"total":len(events),"events":events},ensure_ascii=False,separators=(",",":"))+";\\n"
-    target.write_text(output,encoding="utf-8",newline="\\n")
+    output="window.KDATA="+json.dumps({"generatedAt":datetime.now().astimezone().date().isoformat(),"total":len(events),"events":events},ensure_ascii=False,separators=(",",":"))+";\n"
+    target.write_text(output,encoding="utf-8",newline="\n")
     if git("branch","--show-current")!="main": raise RuntimeError("Safety stop: current branch must be main.")
     git("add","--","data.js")
     if not git("status","--porcelain","--","data.js"): print("No staged changes."); return
