@@ -396,7 +396,7 @@ body{
  function initRegionMap(){
   if(!window.L||!window.KLOCATIONS){$("region-event-list").textContent="지도 라이브러리 또는 지역 데이터를 불러오지 못했습니다.";return;}
   fetch("japan_prefectures.geojson").then(function(response){if(!response.ok)throw new Error("map data unavailable");return response.json();}).then(function(geo){
-   regionFeatures=geo.features||[];regionMap=L.map("region-map",{zoomControl:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,attributionControl:true});
+   regionFeatures=geo.features||[];regionMap=L.map("region-map",{zoomControl:true,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,attributionControl:true});
    regionLayer=L.geoJSON(geo,{style:function(feature){return{color:"#344255",weight:.8,fillColor:"#182536",fillOpacity:.72};},onEachFeature:function(feature,layer){layer.on("click",function(){selectedPrefecture=String(feature.id).padStart(2,"0");renderRegionMap();});}}).addTo(regionMap);
    regionMap.fitBounds(regionLayer.getBounds(),{padding:[8,8]});regionMap.setMaxBounds(regionLayer.getBounds().pad(.08));
    renderRegionMap();
