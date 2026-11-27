@@ -84,7 +84,7 @@ def main():
     if len(events)<minimum: raise RuntimeError("Safety stop: "+str(len(events))+" event records; minimum "+str(minimum))
     events.sort(key=lambda x:(x["start"] or "9999-99-99",x["name"]))
     event_payload={"generatedAt":generated,"total":len(events),"events":events}
-    event_output="window.KDATA="+json.dumps(event_payload,ensure_ascii=False,separators=(",",":"))+";\\n"
+    event_output="window.KDATA="+json.dumps(event_payload,ensure_ascii=False,separators=(",",":"))+";\n"
 
     schedules=[]
     for page in fetch(token,SCHEDULE_DB):
@@ -120,7 +120,7 @@ def main():
         raise RuntimeError("Safety stop: "+str(len(schedules))+" public schedule records; minimum "+str(min_schedules))
     schedules.sort(key=lambda x:(x["date"],x["time"],x["name"]))
     schedule_payload={"generatedAt":generated,"source":"Notion 일본 한류 공연 일정 / 노출대상=true","total":len(schedules),"schedules":schedules}
-    schedule_output="window.KSCHEDULES="+json.dumps(schedule_payload,ensure_ascii=False,separators=(",",":"))+";\\n"
+    schedule_output="window.KSCHEDULES="+json.dumps(schedule_payload,ensure_ascii=False,separators=(",",":"))+";\n"
 
     event_old=read_payload("data.js","window.KDATA")
     schedule_old=read_payload("schedule_data.js","window.KSCHEDULES")
@@ -131,8 +131,8 @@ def main():
 
     if git("branch","--show-current")!="main":
         raise RuntimeError("Safety stop: current branch must be main.")
-    if event_changed: (ROOT/"data.js").write_text(event_output,encoding="utf-8",newline="\\n")
-    if schedule_changed: (ROOT/"schedule_data.js").write_text(schedule_output,encoding="utf-8",newline="\\n")
+    if event_changed: (ROOT/"data.js").write_text(event_output,encoding="utf-8",newline="\n")
+    if schedule_changed: (ROOT/"schedule_data.js").write_text(schedule_output,encoding="utf-8",newline="\n")
     paths=[]
     if event_changed: paths.append("data.js")
     if schedule_changed: paths.append("schedule_data.js")
