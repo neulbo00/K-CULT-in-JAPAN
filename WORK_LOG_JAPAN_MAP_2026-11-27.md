@@ -198,3 +198,14 @@
 
 ### 권역 경계 매핑 메모
 - 47개 도도부현 경계는 Notion의 8개 권역 값에 연결해 표시한다. 권역 구분은 화면 코드에서 관리하며, 三重県은 関西 권역으로 매핑한다. 이는 권역별 합계를 도도부현 개별 실적처럼 보이게 하려는 목적이 아니라 지도상의 권역 범위를 표현하기 위한 표시 규칙이다.
+
+
+## 공개 페이지 반영 완료 (2026-11-27)
+- 기존 공개 `index.html`을 동일 내용의 `index.backup-2026-11-27.html`로 보존했다. 백업 파일의 Git blob SHA가 기존 index.html의 SHA와 일치함을 확인했다.
+- 기존 main 기준점은 `backup/main-before-japan-map-2026-11-27` 브랜치로 보존했다.
+- PR #5를 squash merge 완료: `b6052935d67be90a28bfbd44d77ab9fb41d59b75`.
+- GitHub Pages build 및 deploy workflow run #11 성공: https://github.com/neulbo00/K-CULT-in-JAPAN/actions/runs/46018516450
+- 공개 페이지 URL: https://neulbo00.github.io/K-CULT-in-JAPAN/
+- 기존 화면 백업 URL: https://neulbo00.github.io/K-CULT-in-JAPAN/index.backup-2026-11-27.html
+- 외부 브라우저 네트워크 확인은 이 세션에서 수행할 수 없지만, GitHub Pages의 배포 workflow가 success로 완료된 것을 확인했다.
+- Windows PC의 실제 Notion API 토큰으로 자동 동기화 테스트 및 실제 모바일 브라우저 확인은 후속 작업으로 남아 있다.
