@@ -234,6 +234,24 @@ body{
  }
  function setPresetFromDates(){ $("period-preset").value="custom";start=$("period-start").value||"0001-01-01";end=$("period-end").value||"9999-12-31";renderAll(); }
  function counts(rows,key){var map={};rows.forEach(function(e){var k=e[key]||"미분류";map[k]=(map[k]||0)+1;});return Object.keys(map).map(function(k){return [k,map[k]];}).sort(function(a,b){return b[1]-a[1]||a[0].localeCompare(b[0],"ko");});}
+ var promoterAliases={
+  "FCLIVE ENTERTAINMENT":"FC LIVE ENTERTAINMENT",
+  "NATURESPACE":"NATURESPACE JAPAN",
+  "NATURESPACE Japan":"NATURESPACE JAPAN",
+  "PLUSWIN株式会社":"PLUSWIN",
+  "KISS Entertainment Inc.":"KISS Entertainment",
+  "株式会社フラウ・インターナショナル":"FRAU INTERNATIONAL",
+  "JJ Bliss":"JJ Bliss",
+  "合同会社 JJ Bliss":"JJ Bliss",
+  "株式会社Chapter-I":"Chapter-I",
+  "Universal Music Japan":"UNIVERSAL MUSIC JAPAN",
+  "株式会社インタラクティブメディアミックス":"IMX",
+  "株式会社インタラクティブメディアミックス（IMX）":"IMX",
+  "株式会社 J HARMONY":"J HARMONY",
+  "J HARMONY":"J HARMONY",
+  "WORLD ENTERTAINMENT合同会社":"WORLD ENTERTAINMENT"
+ };
+ function promoterCounts(rows){var map={};rows.forEach(function(e){var raw=e.promoter||"미분류";var key=promoterAliases[raw]||raw;map[key]=(map[key]||0)+1;});return Object.keys(map).map(function(k){return [k,map[k]];}).sort(function(a,b){return b[1]-a[1]||a[0].localeCompare(b[0],"ko");});}
  function renderBars(id,rows,total,kind){
   var root=$(id);root.replaceChildren();var max=Math.max.apply(null,rows.map(function(r){return r[1];}).concat([1]));
   rows.forEach(function(r){
@@ -299,7 +317,7 @@ body{
   });
  }
  function renderAll(){
-  var rows=rangeEvents(),n=rows.length,types=counts(rows,"type"),cats=counts(rows,"category"),promoters=counts(rows,"promoter").filter(function(x){return x[0]!=="미분류";}).slice(0,10);
+  var rows=rangeEvents(),n=rows.length,types=counts(rows,"type"),cats=counts(rows,"category"),promoters=promoterCounts(rows).filter(function(x){return x[0]!=="미분류";}).slice(0,10);
   $("snapshot-caption").textContent=(start.startsWith("0001")&&end.startsWith("9999")?"전체 기간":dateLabel(start)+" ~ "+dateLabel(end))+" · 공연 시작일 기준";
   $("total").textContent=fmt(n);$("type-count").textContent=types.length;$("cat-count").textContent=cats.length;
   $("hero-total").textContent=fmt(D.total);$("hero-period").textContent="전체 DB "+fmt(D.total)+"건 · 데이터 기준 "+D.generatedAt;
