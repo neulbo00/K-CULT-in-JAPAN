@@ -130,3 +130,43 @@ Notion 연결을 통해 마스터 DB 스키마와 2026년 공연 날짜 기준 �
 - 매일 오전 06:00 자동 실행은 설정되어 있으며, 다음 예약 실행(2026-11-28 06:00) 이후 `logs\\sync.log`, 작업 스케줄러의 마지막 실행 결과, GitHub 커밋 변경 여부를 확인한다.
 - PC가 꺼져 있거나 사용자가 로그아웃한 상태에서의 실행 가능 여부는 현재 확인 범위에 포함되지 않았다. 작업 스케줄러의 Principal이 Interactive이므로, 무인/로그아웃 실행 보장은 별도 검증이 필요하다.
 - 이번 확인에서는 `index.html`, `data.js`, 동기화 스크립트의 기능 변경을 수행하지 않았다. 작업 일지에 상태만 추가했다.
+
+
+## 2026-11-27 대시보드 의미 명확화 및 프로모터 표기 통합
+
+### 작업 배경
+- 공개 인포 평가에서 기간 통계 카드의 의미, 미분류 데이터 가시성, 월별 추이 해석, 프로모터 표기 분산 문제가 확인되었다.
+- 기존 작업 기록은 이 파일에 계속 누적한다. Notion은 원본 이벤트 데이터베이스이며, 작업 이력의 기준 저장소는 GitHub로 유지한다.
+
+### 대시보드 수정
+- `TOTAL EVENTS`를 `PERIOD EVENTS`로 변경하고, 선택 기간에 공연 시작일이 포함된 건수임을 보조 문구에 명시했다.
+- `UPCOMING LIST`를 `예정 · 진행 중`으로 변경하고, 선택 기간 내 아직 종료되지 않은 이벤트 건수임을 설명했다.
+- 카테고리 미분류 건수와 비율을 선택 기간에 따라 동적으로 표시한다.
+- 월별 추이에서 선택 기간 중 등록 건수가 가장 많은 2개월을 안내한다. 기준일 이후 월에는 예정 일정이 포함될 수 있음을 함께 설명한다.
+
+### 프로모터 표기 정규화
+- 원본 `data.js`와 Notion 레코드는 변경하지 않는다. 화면의 프로모터 통계 집계 단계에서만 명확한 표기 변형을 대표명으로 묶는다.
+- 적용한 별칭 그룹:
+  - `FC LIVE ENTERTAINMENT` ← `FCLIVE ENTERTAINMENT`
+  - `NATURESPACE JAPAN` ← `NATURESPACE`, `NATURESPACE Japan`
+  - `PLUSWIN` ← `PLUSWIN株式会社`
+  - `KISS Entertainment` ← `KISS Entertainment Inc.`
+  - `FRAU INTERNATIONAL` ← `株式会社フラウ・インターナショナル`
+  - `JJ Bliss` ← `合同会社 JJ Bliss`
+  - `Chapter-I` ← `株式会社Chapter-I`
+  - `UNIVERSAL MUSIC JAPAN` ← `Universal Music Japan`
+  - `IMX` ← `株式会社インタラクティブメディアミックス`, `株式会社インタラクティブメディアミックス（IMX）`
+  - `J HARMONY` ← `株式会社 J HARMONY`, `J HARMONY`
+  - `WORLD ENTERTAINMENT` ← `WORLD ENTERTAINMENT合同会社`
+- 여러 주최·운영사가 함께 적힌 복합 표기는 임의 분리하거나 단일 업체로 합치지 않았다. 예: `FC LIVE ENTERTAINMENT / FCLIVE ROOKIE`, `NATURESPACE Japan / trendMe`, `CJ ENM / CJ ENM Japan` 등은 별도 표기로 유지한다.
+- 이 정규화는 표시·집계용이며, Notion 원본 프로퍼티 및 공개 데이터 파일의 원문은 보존한다.
+
+### 데이터 대조 (2026-11-27 기준)
+- 전체 DB 311건, 2026년 시작일 기준 283건, 예정·진행 중 120건, 카테고리 미분류 35건(12.4%)은 기존 값과 일치한다.
+- 2026년 기간의 대표명 통합 후 프로모터 예시: FC LIVE ENTERTAINMENT 24건, NATURESPACE JAPAN 15건, PLUSWIN 14건, KISS Entertainment 14건.
+- 프로모터 통합은 통계 표시에서만 수행하며 이벤트 총계 및 유형·카테고리 합계에는 영향을 주지 않는다.
+
+### GitHub 반영 절차
+- 기존 PR #4에 프로모터 별칭 집계 로직과 이 작업 기록을 추가한다.
+- `data.js` 및 동기화 스크립트 변경은 없다.
+- 병합 후 main의 파일 내용과 GitHub Pages 공개 반영 여부를 별도로 확인한다.

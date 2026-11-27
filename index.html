@@ -59,6 +59,7 @@ h1 span{color:var(--red)}
 .year-labels{display:flex;justify-content:space-around;color:var(--muted);font:10px var(--mono);padding-top:9px}
 .legend{display:flex;gap:15px;flex-wrap:wrap;margin-top:14px;color:var(--muted);font-size:10px}
 .legend i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:6px}
+.insight-note{margin:12px 0 0;padding:10px 12px;border-left:2px solid var(--red);background:rgba(255,64,87,.045);color:var(--soft);font-size:10px;line-height:1.7}
 .bars{display:grid;gap:12px}
 .bar-row{display:grid;grid-template-columns:86px 1fr 30px;gap:9px;align-items:center;font-size:11px}
 .bar-name{color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -166,16 +167,16 @@ body{
    <div class="period-help">모든 통계와 일정 목록은 공연 시작일을 기준으로 같은 기간을 적용합니다.</div>
   </div>
   <div class="stats">
-   <article class="card"><div class="stat-label">TOTAL EVENTS <span class="accent">●</span></div><div class="stat-value" id="total">---</div><div class="stat-foot">전체 이벤트 집계</div></article>
+   <article class="card"><div class="stat-label">PERIOD EVENTS <span class="accent">●</span></div><div class="stat-value" id="total">---</div><div class="stat-foot">공연 시작일이 선택 기간에 포함된 건수</div></article>
    <article class="card"><div class="stat-label">EVENT TYPES</div><div class="stat-value" id="type-count">---</div><div class="stat-foot">등록된 이벤트 유형</div></article>
    <article class="card"><div class="stat-label">CATEGORIES</div><div class="stat-value" id="cat-count">---</div><div class="stat-foot">한류 카테고리 종류</div></article>
-   <article class="card"><div class="stat-label">UPCOMING LIST</div><div class="stat-value" id="up-count">---</div><div class="stat-foot">현재 공개 데이터에 포함된 일정</div></article>
+   <article class="card"><div class="stat-label">예정 · 진행 중</div><div class="stat-value" id="up-count">---</div><div class="stat-foot">선택 기간 내 아직 종료되지 않은 이벤트</div></article>
   </div>
  </section>
 
  <section id="trends">
   <div class="section-head"><div><div class="kicker">02 / Trends</div><h2>이벤트 트렌드</h2><p id="trend-caption">선택한 기간의 월별 일정 흐름</p></div></div>
-  <article class="card chart-card"><h3 class="chart-title">월별 이벤트 추이</h3><p class="chart-sub">공연 시작일 기준으로 집계된 월별 건수</p><div class="month-chart" id="months"></div><div class="year-labels" id="years"></div><div class="legend"><span><i></i>월별 이벤트</span><span>막대 높이는 월별 건수 기준</span></div></article>
+  <article class="card chart-card"><h3 class="chart-title">월별 이벤트 추이</h3><p class="chart-sub">공연 시작일 기준으로 집계된 월별 건수</p><div class="month-chart" id="months"></div><div class="year-labels" id="years"></div><div class="legend"><span><i></i>월별 이벤트</span><span>막대 높이는 월별 건수 기준</span></div><p class="insight-note" id="monthly-insight"></p></article>
   <p class="disclaimer" id="integrity-note"></p>
  </section>
 
@@ -187,8 +188,8 @@ body{
     <div><b>이벤트</b><span>앨범 발매·프로모션·특전 등 일반 행사</span></div><div><b>콘서트</b><span>가수·뮤지션의 라이브 공연</span></div><div><b>팬미팅</b><span>아티스트와 팬의 만남 중심 행사</span></div><div><b>팬콘</b><span>공연과 팬미팅 요소를 결합한 행사</span></div><div><b>페스티벌</b><span>복수 출연자 또는 프로그램 중심 축제</span></div><div><b>쇼케이스</b><span>신곡·앨범·아티스트 소개 무대</span></div><div><b>문화행사</b><span>한국 문화 교류 및 체험 행사</span></div><div><b>전시/체험</b><span>전시·팝업·체험형 행사</span></div><div><b>기타</b><span>위 유형에 명확히 속하지 않는 항목</span></div>
    </div></article>
    <article class="card chart-card"><h3 class="chart-title">한류 카테고리</h3><p class="chart-sub">콘텐츠 분야 · 미분류 포함</p><div class="bars" id="categories"></div>
-   <p class="chart-note">K-POP: 아이돌·대중음악 / K-Drama: 드라마·배우 / K-Music: 한국 음악 전반 / K-Culture: 문화 / K-Content: 영상·디지털 콘텐츠 / K-Lifestyle: 뷰티·패션·푸드 등 생활문화. 미분류는 Notion 카테고리가 비어 있는 원본 데이터입니다.</p></article>
-   <article class="card chart-card"><h3 class="chart-title">프로모터 TOP</h3><p class="chart-sub">데이터에 기록된 주요 주최·프로모터</p><div class="bars" id="promoters"></div><p class="chart-note">프로모터 정보가 비어 있는 이벤트는 순위 집계에서 제외합니다.</p></article>
+   <p class="insight-note" id="category-quality"></p><p class="chart-note">K-POP: 아이돌·대중음악 / K-Drama: 드라마·배우 / K-Music: 한국 음악 전반 / K-Culture: 문화 / K-Content: 영상·디지털 콘텐츠 / K-Lifestyle: 뷰티·패션·푸드 등 생활문화. 미분류는 Notion 카테고리가 비어 있는 원본 데이터입니다.</p></article>
+   <article class="card chart-card"><h3 class="chart-title">프로모터 TOP</h3><p class="chart-sub">데이터에 기록된 주요 주최·프로모터</p><div class="bars" id="promoters"></div><p class="chart-note">프로모터 정보가 비어 있는 이벤트는 순위 집계에서 제외합니다. 원본 표기 기준으로 집계하며, 동일 주체 여부가 확인되지 않은 표기는 자동 통합하지 않습니다.</p></article>
   </div>
  </section>
 
@@ -233,6 +234,24 @@ body{
  }
  function setPresetFromDates(){ $("period-preset").value="custom";start=$("period-start").value||"0001-01-01";end=$("period-end").value||"9999-12-31";renderAll(); }
  function counts(rows,key){var map={};rows.forEach(function(e){var k=e[key]||"미분류";map[k]=(map[k]||0)+1;});return Object.keys(map).map(function(k){return [k,map[k]];}).sort(function(a,b){return b[1]-a[1]||a[0].localeCompare(b[0],"ko");});}
+ var promoterAliases={
+  "FCLIVE ENTERTAINMENT":"FC LIVE ENTERTAINMENT",
+  "NATURESPACE":"NATURESPACE JAPAN",
+  "NATURESPACE Japan":"NATURESPACE JAPAN",
+  "PLUSWIN株式会社":"PLUSWIN",
+  "KISS Entertainment Inc.":"KISS Entertainment",
+  "株式会社フラウ・インターナショナル":"FRAU INTERNATIONAL",
+  "JJ Bliss":"JJ Bliss",
+  "合同会社 JJ Bliss":"JJ Bliss",
+  "株式会社Chapter-I":"Chapter-I",
+  "Universal Music Japan":"UNIVERSAL MUSIC JAPAN",
+  "株式会社インタラクティブメディアミックス":"IMX",
+  "株式会社インタラクティブメディアミックス（IMX）":"IMX",
+  "株式会社 J HARMONY":"J HARMONY",
+  "J HARMONY":"J HARMONY",
+  "WORLD ENTERTAINMENT合同会社":"WORLD ENTERTAINMENT"
+ };
+ function promoterCounts(rows){var map={};rows.forEach(function(e){var raw=e.promoter||"미분류";var key=promoterAliases[raw]||raw;map[key]=(map[key]||0)+1;});return Object.keys(map).map(function(k){return [k,map[k]];}).sort(function(a,b){return b[1]-a[1]||a[0].localeCompare(b[0],"ko");});}
  function renderBars(id,rows,total,kind){
   var root=$(id);root.replaceChildren();var max=Math.max.apply(null,rows.map(function(r){return r[1];}).concat([1]));
   rows.forEach(function(r){
@@ -248,6 +267,9 @@ body{
  function renderMonths(rows){
   var map={};rows.forEach(function(e){var m=e.start.slice(0,7);map[m]=(map[m]||0)+1;});
   var months=Object.keys(map).sort(),max=Math.max.apply(null,months.map(function(m){return map[m];}).concat([1]));
+  var ranked=months.slice().sort(function(a,b){return map[b]-map[a]||a.localeCompare(b);}).slice(0,2);
+  if(!ranked.length){$("monthly-insight").textContent="선택 기간에 집계할 시작일 데이터가 없습니다.";}
+  else{$("monthly-insight").textContent="등록 건수가 많은 달: "+ranked.map(function(m){return m.replace("-",".")+" "+fmt(map[m])+"건";}).join(" · ")+". 공연 시작일 기준 등록 건수이며, 기준일 이후 월에는 예정 일정이 포함됩니다."; }
   $("months").replaceChildren();$("years").replaceChildren();
   months.forEach(function(m){var el=document.createElement("div");el.className="month"+(m===today.slice(0,7)?" current":"");
    var count=document.createElement("span");count.className="month-count";count.textContent=map[m];
@@ -295,12 +317,14 @@ body{
   });
  }
  function renderAll(){
-  var rows=rangeEvents(),n=rows.length,types=counts(rows,"type"),cats=counts(rows,"category"),promoters=counts(rows,"promoter").filter(function(x){return x[0]!=="미분류";}).slice(0,10);
+  var rows=rangeEvents(),n=rows.length,types=counts(rows,"type"),cats=counts(rows,"category"),promoters=promoterCounts(rows).filter(function(x){return x[0]!=="미분류";}).slice(0,10);
   $("snapshot-caption").textContent=(start.startsWith("0001")&&end.startsWith("9999")?"전체 기간":dateLabel(start)+" ~ "+dateLabel(end))+" · 공연 시작일 기준";
   $("total").textContent=fmt(n);$("type-count").textContent=types.length;$("cat-count").textContent=cats.length;
   $("hero-total").textContent=fmt(D.total);$("hero-period").textContent="전체 DB "+fmt(D.total)+"건 · 데이터 기준 "+D.generatedAt;
   $("up-count").textContent=fmt(rows.filter(function(e){return statusOf(e)!=="종료";}).length);
   $("integrity-note").textContent="집계 기준: 공연 시작일이 선택 기간에 포함된 이벤트 "+fmt(n)+"건. 유형 합계 "+fmt(types.reduce(function(a,x){return a+x[1];},0))+"건, 카테고리 합계 "+fmt(cats.reduce(function(a,x){return a+x[1];},0))+"건. 미분류 카테고리 "+fmt((cats.find(function(x){return x[0]==="미분류";})||["",0])[1])+"건. 날짜 미등록 "+fmt(D.events.filter(function(e){return !e.start;}).length)+"건은 기간 통계에서 제외.";
+  var unclassified=(cats.find(function(x){return x[0]==="미분류";})||["",0])[1];
+  $("category-quality").textContent="분류 미입력 "+fmt(unclassified)+"건 · "+pct(unclassified,n)+"% / 선택 기간 기준. 원본 Notion 카테고리가 비어 있는 레코드입니다.";
   $("trend-caption").textContent="공연 시작일 기준 · "+fmt(n)+"건";
   renderMonths(rows);renderBars("types",types,n,"type");renderBars("categories",cats,n,"category");renderBars("promoters",promoters,n,null);
   renderFilterButtons();renderSchedule();
