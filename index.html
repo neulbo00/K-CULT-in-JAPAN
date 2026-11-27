@@ -296,7 +296,7 @@ body{
  }
  function renderAll(){
   var rows=rangeEvents(),n=rows.length,types=counts(rows,"type"),cats=counts(rows,"category"),promoters=counts(rows,"promoter").filter(function(x){return x[0]!=="미분류";}).slice(0,10);
-  $("snapshot-caption").textContent=dateLabel(start)+" ~ "+dateLabel(end)+" · 공연 시작일 기준";
+  $("snapshot-caption").textContent=(start.startsWith("0001")&&end.startsWith("9999")?"전체 기간":dateLabel(start)+" ~ "+dateLabel(end))+" · 공연 시작일 기준";
   $("total").textContent=fmt(n);$("type-count").textContent=types.length;$("cat-count").textContent=cats.length;
   $("hero-total").textContent=fmt(D.total);$("hero-period").textContent="전체 DB "+fmt(D.total)+"건 · 데이터 기준 "+D.generatedAt;
   $("up-count").textContent=fmt(rows.filter(function(e){return statusOf(e)!=="종료";}).length);
