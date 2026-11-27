@@ -66,6 +66,7 @@ h1 span{color:var(--red)}
 .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--red2),var(--red))}
 .bar-num{text-align:right;color:var(--soft);font:10px var(--mono)}
 .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.analytics-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .region-empty{min-height:230px;display:grid;place-items:center;text-align:center;border:1px dashed #343d4c;border-radius:13px;padding:24px;background:rgba(255,255,255,.012)}
 .region-symbol{width:54px;height:54px;border:1px solid #3a4351;border-radius:50%;display:grid;place-items:center;color:var(--red);font:18px var(--mono);margin:0 auto 12px}
 .region-empty strong{font-size:13px}
@@ -88,7 +89,7 @@ h1 span{color:var(--red)}
 .empty{padding:30px;text-align:center;color:var(--muted);font-size:12px;grid-column:1/-1}
 .disclaimer{margin:14px 0 0;color:var(--muted);font-size:10px;line-height:1.7}
 .footer{border-top:1px solid var(--line);margin-top:54px;padding:22px 0 35px;color:var(--muted);font-size:10px;display:flex;justify-content:space-between;gap:14px}
-@media(max-width:760px){.wrap{width:min(100% - 30px,600px)}.navlinks{display:none}.hero{grid-template-columns:1fr;padding:43px 0 24px;gap:20px}.hero-side{border-left:0;border-top:1px solid var(--line);padding:14px 0 0}.stats{grid-template-columns:repeat(2,1fr);gap:8px}.card{padding:16px}.stat-value{font-size:29px}.two-col,.split{grid-template-columns:1fr}.events{grid-template-columns:1fr}.section-head{margin-top:27px}.chart-card{padding:17px}.month-chart{height:160px}.footer{flex-direction:column}}
+@media(max-width:760px){.wrap{width:min(100% - 30px,600px)}.analytics-grid{grid-template-columns:1fr}.navlinks{display:none}.hero{grid-template-columns:1fr;padding:43px 0 24px;gap:20px}.hero-side{border-left:0;border-top:1px solid var(--line);padding:14px 0 0}.stats{grid-template-columns:repeat(2,1fr);gap:8px}.card{padding:16px}.stat-value{font-size:29px}.two-col,.split{grid-template-columns:1fr}.events{grid-template-columns:1fr}.section-head{margin-top:27px}.chart-card{padding:17px}.month-chart{height:160px}.footer{flex-direction:column}}
 @media(max-width:390px){.bar-row{grid-template-columns:76px 1fr 25px}.event{grid-template-columns:66px 1fr;padding:12px}.month-label{font-size:9px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
 /* K-CULT color journey: restrained red glow above, deep blue glow below */
@@ -116,7 +117,7 @@ body{
 <header class="topbar">
  <div class="wrap nav">
   <a class="brand" href="#"><span class="brand-mark">K</span><span>NEULBO / K-CULT<small>JAPAN HALLYU INTELLIGENCE</small></span></a>
-  <nav class="navlinks"><a href="#overview">OVERVIEW</a><a href="#trends">TRENDS</a><a href="#regions">REGIONS</a><a href="#schedule">SCHEDULE</a></nav>
+  <nav class="navlinks"><a href="#overview">OVERVIEW</a><a href="#trends">TRENDS</a><a href="#analytics">ANALYTICS</a><a href="#regions">REGIONS</a><a href="#schedule">SCHEDULE</a></nav>
   <div class="updated" id="updated">DATA / --</div>
  </div>
 </header>
@@ -138,24 +139,26 @@ body{
 
  <section id="trends">
   <div class="section-head"><div><div class="kicker">02 / Trends</div><h2>이벤트 트렌드</h2><p>월별 일정 흐름과 이벤트 구성</p></div></div>
-  <div class="two-col">
-   <article class="card chart-card"><h3 class="chart-title">월별 이벤트 추이</h3><p class="chart-sub">공연 시작일 기준으로 집계된 월별 건수</p><div class="month-chart" id="months"></div><div class="year-labels" id="years"></div><div class="legend"><span><i></i>기준월</span><span>막대 높이는 월별 건수 기준</span></div></article>
-   <article class="card chart-card"><h3 class="chart-title">이벤트 유형</h3><p class="chart-sub">등록된 유형별 이벤트 수</p><div class="bars" id="types"></div></article>
-  </div>
-  <div class="split" style="margin-top:14px">
-   <article class="card chart-card"><h3 class="chart-title">한류 카테고리</h3><p class="chart-sub">카테고리별 등록 현황</p><div class="bars" id="categories"></div></article>
-   <article class="card chart-card"><h3 class="chart-title">프로모터 TOP</h3><p class="chart-sub">데이터에 포함된 주요 프로모터</p><div class="bars" id="promoters"></div></article>
-  </div>
+  <article class="card chart-card"><h3 class="chart-title">월별 이벤트 추이</h3><p class="chart-sub">공연 시작일 기준으로 집계된 월별 건수</p><div class="month-chart" id="months"></div><div class="year-labels" id="years"></div><div class="legend"><span><i></i>월별 이벤트</span><span>막대 높이는 월별 건수 기준</span></div></article>
   <p class="disclaimer" id="integrity-note"></p>
  </section>
 
+ <section id="analytics">
+  <div class="section-head"><div><div class="kicker">03 / Analytics</div><h2>이벤트 구성 분석</h2><p>유형·한류 카테고리·주요 프로모터별 등록 현황</p></div></div>
+  <div class="analytics-grid">
+   <article class="card chart-card"><h3 class="chart-title">이벤트 유형</h3><p class="chart-sub">등록된 유형별 이벤트 수</p><div class="bars" id="types"></div></article>
+   <article class="card chart-card"><h3 class="chart-title">한류 카테고리</h3><p class="chart-sub">카테고리별 등록 현황</p><div class="bars" id="categories"></div></article>
+   <article class="card chart-card"><h3 class="chart-title">프로모터 TOP</h3><p class="chart-sub">데이터에 포함된 주요 프로모터</p><div class="bars" id="promoters"></div></article>
+  </div>
+ </section>
+
  <section id="regions">
-  <div class="section-head"><div><div class="kicker">03 / Japan Map</div><h2>일본 지역별 한류 분포</h2><p>지역 지도와 권역별 통계를 연결하는 영역</p></div></div>
+  <div class="section-head"><div><div class="kicker">04 / Japan Map</div><h2>일본 지역별 한류 분포</h2><p>지역 지도와 권역별 통계를 연결하는 영역</p></div></div>
   <div class="region-empty"><div><div class="region-symbol">JP</div><strong>지역 데이터 연결 준비 중</strong><p>현재 공개용 데이터 파일에는 권역별 이벤트 수가 포함되어 있지 않습니다. Notion의 지역 속성을 연결한 뒤 지도와 차트를 실제 집계값으로 표시합니다.</p><div class="region-tags"><span>北海道</span><span>東北</span><span>関東</span><span>中部</span><span>関西</span><span>中国</span><span>四国</span><span>九州・沖縄</span></div></div></div>
  </section>
 
  <section id="schedule">
-  <div class="section-head"><div><div class="kicker">04 / Schedule</div><h2>다가오는 공연·이벤트</h2><p id="schedule-note">공개 데이터에 포함된 일정 목록</p></div><div class="kicker">SEARCH / FILTER</div></div>
+  <div class="section-head"><div><div class="kicker">05 / Schedule</div><h2>다가오는 공연·이벤트</h2><p id="schedule-note">공개 데이터에 포함된 일정 목록</p></div><div class="kicker">SEARCH / FILTER</div></div>
   <div class="toolbar"><input id="search" class="search" type="search" placeholder="아티스트 또는 이벤트명 검색" aria-label="일정 검색"><div class="filters" id="filters"></div></div>
   <div class="events" id="events"></div>
   <p class="disclaimer">이 일정 목록은 현재 data.js에 포함된 미리보기 데이터입니다. 전체 이벤트 311건의 전체 일정 목록을 의미하지 않습니다.</p>
